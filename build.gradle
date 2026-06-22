@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id("io.freefair.lombok") version "9.5.0"
+    id "io.qameta.allure" version "4.1.0"
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def allureVersion = "2.24.0"
+
+dependencies {
+    testImplementation 'org.testng:testng:7.12.0'
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.0")
+    implementation("org.aeonbits.owner:owner:1.0.12")
+    implementation("commons-io:commons-io:2.22.0")
+
+    testImplementation "io.qameta.allure:allure-testng:${allureVersion}"
+}
+
+tasks.named('test') {
+    systemProperty 'file.encoding', 'UTF-8'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    useTestNG() {
+        // Включаем генерацию дефолтных отчетов (в т.ч. testng-failed.xml)
+        useDefaultListeners = true
+
+        // Подхватываем кастомный suite, если он передан
+        def suiteName = System.getProperty('suite')
+        if (suiteName != null) {
+            suites suiteName
+        }
+    }
+}
+
+allure {
+    version = allureVersion
+}

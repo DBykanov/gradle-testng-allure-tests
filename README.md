@@ -1,0 +1,1 @@
+# gradle-testng-allure-tests
